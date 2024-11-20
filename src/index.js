@@ -13,7 +13,7 @@ const editProfileButton = document.querySelector(".profile__edit-button");
 const editProfilePopup = document.querySelector(".popup_type_edit");
 const addProfileButton = document.querySelector(".profile__add-button");
 const addNewCardPopup = document.querySelector(".popup_type_new-card");
-const popupCloseButton = document.querySelectorAll(".popup__close");
+const closeButtons = document.querySelectorAll(".popup__close");
 
 // DOM элементы для карточки и попапа с изображением
 const cardPopup = document.querySelector(".popup_type_image");
@@ -101,7 +101,7 @@ addProfileButton.addEventListener("click", function () {
 newCardFormPopup.addEventListener("submit", handleAddNewCardForm);
 
 // Обработчики для кнопок закрытия попапов
-popupCloseButton.forEach(function (button) {
+closeButtons.forEach(function (button) {
   button.addEventListener("click", function (evt) {
     const modal = evt.target.closest(".popup");
     closeModal(modal);

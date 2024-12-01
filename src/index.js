@@ -2,6 +2,7 @@ import "./pages/index.css"; // импорт главного файла стил
 import { initialCards } from "./scripts/cards"; // импорт данных карточек
 import { createCard, deleteCard, handleLikeButton } from "./scripts/card"; // импорт функций для работы с карточками
 import { openModal, closeModal } from "./modal"; // импорт функций для открытия и закрытия модальных окон
+import { enableValidation, clearValidation } from "./validation";
 
 // DOM создание контейнера для карточек и массива всех модальных окон
 const cardTemplate = document.querySelector("#card-template").content;
@@ -33,6 +34,19 @@ const profileFormDescriptionInput = profileEditForm.querySelector(
 const newCardFormPopup = document.forms["new-place"];
 const newCardFormInputName = newCardFormPopup.elements["place-name"];
 const newCardFormInputLink = newCardFormPopup.elements.link;
+
+//Выносим все необходимые элементы формы в константы (7.val)
+const formElement = document.querySelector(".popup__form");
+const inputElement = document.querySelector(".popup__input");
+
+const ValidationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 // Открытие попапа с изображением карточки
 function handleClickedCard(cardData) {
@@ -86,6 +100,7 @@ function handleProfileForm(evt) {
 editProfileButton.addEventListener("click", function () {
   profileFormNameInput.value = profileTitle.textContent;
   profileFormDescriptionInput.value = profileDescription.textContent;
+  clearValidation(profileEditForm, ValidationConfig);
   openModal(editProfilePopup);
 });
 
@@ -94,6 +109,7 @@ profileEditForm.addEventListener("submit", handleProfileForm);
 
 // Открытие попапа добавления новой карточки
 addProfileButton.addEventListener("click", function () {
+  clearValidation(addNewCardPopup, ValidationConfig);
   openModal(addNewCardPopup);
 });
 
@@ -112,3 +128,5 @@ closeButtons.forEach(function (button) {
 modalWindows.forEach(function (modalWindow) {
   modalWindow.classList.add("popup_is-animated");
 });
+
+enableValidation(ValidationConfig);

@@ -1,17 +1,20 @@
+import { removeCard } from "./api";
 // Создание карточки
 function createCard(
   cardData,
   onDelete,
+  userId,
   cardTemplate,
   clickedCard,
   likeButtonFun
 ) {
   // Клонируем шаблон карточки из DOM
   const cardFragment = cardTemplate.cloneNode(true);
+  console.log(cardFragment);
 
   // Находим элементы карточки
   const cardElement = cardFragment.querySelector(".places__item");
-  const likeButton = cardFragment.querySelector(".card__like-button");
+  const likeButton = cardElement.querySelector(".card__like-button");
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const cardTitle = cardElement.querySelector(".card__title");
   const cardImage = cardElement.querySelector(".card__image");
@@ -21,7 +24,19 @@ function createCard(
   cardTitle.textContent = cardData.name;
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
-	likeCount.textContent = cardData.likes.length
+  likeCount.textContent = cardData.likes.length;
+
+  // console.log("userId: ", userId);
+  // console.log("cardData.owner._id: ", cardData.owner._id);
+
+  if (userId !== cardData.owner._id) {
+    // deleteButton.classList.add("card__delete-hide");
+    deleteButton.style.display = "none";
+  } else {
+    deleteButton.addEventListener("click", function () {
+      onDelete(cardElement, cardData._id);
+    });
+  }
 
   // Добавляем обработчики событий
   deleteButton.addEventListener("click", function () {
@@ -38,8 +53,10 @@ function createCard(
 }
 
 // Удаление карточки
-function deleteCard(cardElement) {
-  cardElement.remove();
+function deleteCard(cardElement, id) {
+  removeCard(id).then(function (data) {
+    cardElement.remove();
+  });
 }
 
 // Обработка лайка

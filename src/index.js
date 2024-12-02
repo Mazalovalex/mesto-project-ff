@@ -8,6 +8,7 @@ import {
   fetchCardsData,
   editUserProfile,
   addNewCard,
+  removeCard,
 } from "./scripts/api";
 
 // DOM создание контейнера для карточек и массива всех модальных окон
@@ -45,6 +46,7 @@ const newCardFormInputLink = newCardFormPopup.elements.link;
 //Выносим все необходимые элементы формы в константы (7.val)
 const formElement = document.querySelector(".popup__form");
 const inputElement = document.querySelector(".popup__input");
+let myId = "";
 
 const ValidationConfig = {
   formSelector: ".popup__form",
@@ -81,15 +83,10 @@ function handleAddNewCardForm(evt) {
 
   addNewCard(newCardFormInputName.value, newCardFormInputLink.value).then(
     function (newCardData) {
-      const newCard = {
-        name: newCardData.name,
-        link: newCardData.link,
-        likes: [],
-      };
-
       const card = createCard(
-        newCard,
+        newCardData,
         deleteCard,
+        myId,
         cardTemplate,
         handleClickedCard,
         handleLikeButton
@@ -174,11 +171,14 @@ Promise.all([fetchUserData(), fetchCardsData()]).then(
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
     profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+    // console.log(userData._id)
+    myId = userData._id;
 
     cardData.forEach((cardData) => {
       const card = createCard(
         cardData,
         deleteCard,
+        myId,
         cardTemplate,
         handleClickedCard,
         handleLikeButton

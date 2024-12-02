@@ -59,3 +59,16 @@ export const addNewCard = (imageName, imageLink) => {
     }
   });
 };
+
+
+//Удаление карточки
+export const removeCard = (id) => {
+  return fetch(`${config.baseUrl}/cards/${id}`, {
+    method: "DELETE",
+    headers: config.headers,
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+  });
+};

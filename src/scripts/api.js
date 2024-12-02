@@ -6,6 +6,7 @@ const config = {
   },
 };
 
+//Загрузка информации о пользователе с сервера
 export const fetchUserData = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
@@ -16,6 +17,7 @@ export const fetchUserData = () => {
   });
 };
 
+//Загрузка карточек с сервера
 export const fetchCardsData = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
@@ -26,6 +28,7 @@ export const fetchCardsData = () => {
   });
 };
 
+//Редактирование профиля
 export const editUserProfile = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
@@ -33,6 +36,22 @@ export const editUserProfile = (name, about) => {
     body: JSON.stringify({
       name: name,
       about: about,
+    }),
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+  });
+};
+
+//Добавление новой карточки
+export const addNewCard = (imageName, imageLink) => {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: "POST",
+    headers: config.headers,
+    body: JSON.stringify({
+      name: imageName,
+      link: imageLink,
     }),
   }).then((res) => {
     if (res.ok) {

@@ -3,7 +3,12 @@ import { initialCards } from "./scripts/cards"; // импорт данных к�
 import { createCard, deleteCard, handleLikeButton } from "./scripts/card"; // импорт функций для работы с карточками
 import { openModal, closeModal } from "./scripts/modal"; // импорт функций для открытия и закрытия модальных окон
 import { enableValidation, clearValidation } from "./scripts/validation";
-import { fetchUserData, fetchCardsData, editUserProfile } from "./scripts/api";
+import {
+  fetchUserData,
+  fetchCardsData,
+  editUserProfile,
+  addNewCard,
+} from "./scripts/api";
 
 // DOM создание контейнера для карточек и массива всех модальных окон
 const cardTemplate = document.querySelector("#card-template").content;
@@ -73,22 +78,44 @@ function handleClickedCard(cardData) {
 // Добавление новой карточки через форму
 function handleAddNewCardForm(evt) {
   evt.preventDefault();
-  const newCard = {
-    name: newCardFormInputName.value,
-    link: newCardFormInputLink.value,
-  };
 
-  const card = createCard(
-    newCard,
-    deleteCard,
-    cardTemplate,
-    handleClickedCard,
-    handleLikeButton
+  addNewCard(newCardFormInputName.value, newCardFormInputLink.value).then(
+    function (newCardData) {
+      const newCard = {
+        name: newCardData.name,
+        link: newCardData.link,
+      };
+
+      const card = createCard(
+        newCard,
+        deleteCard,
+        cardTemplate,
+        handleClickedCard,
+        handleLikeButton
+      );
+      placesList.prepend(card);
+      newCardFormPopup.reset();
+      closeModal(addNewCardPopup);
+    }
   );
-  placesList.prepend(card);
-  newCardFormPopup.reset();
-  closeModal(addNewCardPopup);
 }
+
+//   const newCard = {
+//     name: newCardFormInputName.value,
+//     link: newCardFormInputLink.value,
+//   };
+
+//   const card = createCard(
+//     newCard,
+//     deleteCard,
+//     cardTemplate,
+//     handleClickedCard,
+//     handleLikeButton
+//   );
+//   placesList.prepend(card);
+//   newCardFormPopup.reset();
+//   closeModal(addNewCardPopup);
+// }
 
 // Сохранение изменений профиля
 function handleProfileForm(evt) {

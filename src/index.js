@@ -84,6 +84,7 @@ function handleAddNewCardForm(evt) {
       const newCard = {
         name: newCardData.name,
         link: newCardData.link,
+        likes: [],
       };
 
       const card = createCard(

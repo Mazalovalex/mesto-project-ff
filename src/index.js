@@ -8,6 +8,7 @@ import {
   fetchCardsData,
   editUserProfile,
   addNewCard,
+  updateUserAvatar,
 } from "./scripts/api";
 
 // DOM создание контейнера для карточек и массива всех модальных окон
@@ -36,6 +37,12 @@ const profileFormNameInput = profileEditForm.querySelector('[name="name"]');
 const profileFormDescriptionInput = profileEditForm.querySelector(
   '[name="description"]'
 );
+
+// DOM элементы Avatar
+const newAvatarButton = document.querySelector(".profile__image-edit-button");
+const newAvatarPopup = document.querySelector(".popup_type_new-avatar");
+const newAvatarForm = document.forms["new-avatar"];
+const newAvatarInput = newAvatarForm.elements.link;
 
 // DOM элементы для добавления новой карточки
 const newCardFormPopup = document.forms["new-place"];
@@ -80,8 +87,11 @@ function handleClickedCard(cardData) {
 function handleAddNewCardForm(evt) {
   evt.preventDefault();
 
-  addNewCard(newCardFormInputName.value, newCardFormInputLink.value).then(
-    function (newCardData) {
+  const button = newCardFormPopup.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
+
+  addNewCard(newCardFormInputName.value, newCardFormInputLink.value)
+    .then(function (newCardData) {
       const card = createCard(
         newCardData,
         deleteCard,
@@ -93,8 +103,15 @@ function handleAddNewCardForm(evt) {
       placesList.prepend(card);
       newCardFormPopup.reset();
       closeModal(addNewCardPopup);
-    }
-  );
+    })
+
+    .catch(function (err) {
+      console.error("Произошла ошибка при выполнении запроса:", err);
+      alert("Что-то пошло не так. Пожалуйста, попробуйте еще раз.");
+    })
+    .finally(function () {
+      button.textContent = "Сохранить"; // Независимо от результата запроса текст кнопки вернется на "Сохранить"
+    });
 }
 
 //   const newCard = {
@@ -117,17 +134,49 @@ function handleAddNewCardForm(evt) {
 // Сохранение изменений профиля
 function handleProfileForm(evt) {
   evt.preventDefault();
-  editUserProfile(
-    profileFormNameInput.value,
-    profileFormDescriptionInput.value
-  ).then(function (userData) {
-    profileTitle.textContent = userData.name;
-    profileDescription.textContent = userData.about;
-    closeModal(editProfilePopup);
-  });
-  // profileTitle.textContent = profileFormNameInput.value;
-  // profileDescription.textContent = profileFormDescriptionInput.value;
-  // closeModal(editProfilePopup);
+
+  const button = profileEditForm.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
+
+  editUserProfile(profileFormNameInput.value, profileFormDescriptionInput.value)
+    .then(function (userData) {
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+      closeModal(editProfilePopup);
+    })
+    // profileTitle.textContent = profileFormNameInput.value;
+    // profileDescription.textContent = profileFormDescriptionInput.value;
+    // closeModal(editProfilePopup);
+
+    .catch(function (err) {
+      console.error("Произошла ошибка при выполнении запроса:", err);
+      alert("Что-то пошло не так. Пожалуйста, попробуйте еще раз.");
+    })
+    .finally(function () {
+      button.textContent = "Сохранить"; // Независимо от результата запроса текст кнопки вернется на "Сохранить"
+    });
+}
+
+function handleNewAvatarForm(evt) {
+  evt.preventDefault();
+
+  const button = newAvatarForm.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
+
+  updateUserAvatar(newAvatarInput.value)
+    .then(function (userData) {
+      profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+      closeModal(newAvatarPopup);
+      newAvatarForm.reset();
+    })
+
+    .catch(function (err) {
+      console.error("Произошла ошибка при выполнении запроса:", err);
+      alert("Что-то пошло не так. Пожалуйста, попробуйте еще раз.");
+    })
+    .finally(function () {
+      button.textContent = "Сохранить"; // Независимо от результата запроса текст кнопки вернется на "Сохранить"
+    });
 }
 
 // Открытие попапа редактирования профиля
@@ -138,17 +187,11 @@ editProfileButton.addEventListener("click", function () {
   openModal(editProfilePopup);
 });
 
-// Сохранение изменений профиля
-profileEditForm.addEventListener("submit", handleProfileForm);
-
 // Открытие попапа добавления новой карточки
 addProfileButton.addEventListener("click", function () {
   clearValidation(addNewCardPopup, ValidationConfig);
   openModal(addNewCardPopup);
 });
-
-// Добавление новой карточки
-newCardFormPopup.addEventListener("submit", handleAddNewCardForm);
 
 // Обработчики для кнопок закрытия попапов
 closeButtons.forEach(function (button) {
@@ -163,7 +206,20 @@ modalWindows.forEach(function (modalWindow) {
   modalWindow.classList.add("popup_is-animated");
 });
 
-enableValidation(ValidationConfig);
+// Открытие попапа для загрузки фотографии
+newAvatarButton.addEventListener("click", function () {
+  clearValidation(newAvatarForm, ValidationConfig);
+  openModal(newAvatarPopup);
+});
+
+// Сохранение изменений профиля
+profileEditForm.addEventListener("submit", handleProfileForm);
+
+// Добавление новой карточки
+newCardFormPopup.addEventListener("submit", handleAddNewCardForm);
+
+// Сохранение нового аватара
+newAvatarForm.addEventListener("submit", handleNewAvatarForm);
 
 Promise.all([fetchUserData(), fetchCardsData()]).then(
   ([userData, cardData]) => {
@@ -186,3 +242,5 @@ Promise.all([fetchUserData(), fetchCardsData()]).then(
     });
   }
 );
+
+enableValidation(ValidationConfig);

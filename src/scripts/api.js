@@ -60,7 +60,6 @@ export const addNewCard = (imageName, imageLink) => {
   });
 };
 
-
 //Удаление карточки
 export const removeCard = (id) => {
   return fetch(`${config.baseUrl}/cards/${id}`, {
@@ -69,6 +68,43 @@ export const removeCard = (id) => {
   }).then((res) => {
     if (res.ok) {
       return res.json();
+    }  
+  });
+};
+
+
+// Постановка и снятие лайка
+export const addLike = (id) => {
+  return fetch(`${config.baseUrl}/cards/likes/${id}`, {
+    method: "PUT",
+    headers: config.headers,
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
     }
   });
 };
+
+export const removeLike = (id) => {
+  return fetch(`${config.baseUrl}/cards/likes/${id}`, {
+    method: "DELETE",
+    headers: config.headers,
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+  });
+};
+
+// // Постановка и снятие лайка
+// export const likeCard = (id, isLiked) => {
+//   return fetch(`${config.baseUrl}/cards/likes/${id}`, {
+//     method: isLiked ? "DELETE" : "PUT",
+//     headers: config.headers,
+//   }).then((res) => {
+//     if (res.ok) {
+//       return res.json();
+//     }
+//   });
+// };
+

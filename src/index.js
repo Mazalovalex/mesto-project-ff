@@ -8,7 +8,6 @@ import {
   fetchCardsData,
   editUserProfile,
   addNewCard,
-  removeCard,
 } from "./scripts/api";
 
 // DOM создание контейнера для карточек и массива всех модальных окон

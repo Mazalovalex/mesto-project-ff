@@ -38,9 +38,9 @@ function createCard(
 
   // Обработчик клика по кнопке лайка
   likeButton.addEventListener("click", () => {
-    handleLikeButton(likeButton, cardData._id, likeCount).catch(function (err) {
-      console.error("Ошибка при изменении лайка:", err); // Логируем ошибку
-      alert("Не удалось обновить лайк. Пожалуйста, попробуйте снова."); // Сообщение пользователю
+    handleLikeButton(likeButton, cardData._id, likeCount).catch((err) => {
+      console.error("Ошибка при обработке лайка:", err);
+      alert("Что-то пошло не так. Пожалуйста, попробуйте еще раз.");
     });
   });
 
@@ -50,14 +50,16 @@ function createCard(
   } else {
     // Обработчик клика по кнопке удаления (удаляет карточку)
     deleteButton.addEventListener("click", function () {
-      onDelete(cardElement, cardData._id).catch(function (err) {
-        console.error("Ошибка при удалении карточки:", err); // Логируем ошибку
-        alert("Не удалось удалить карточку. Пожалуйста, попробуйте снова."); // Сообщение пользователю
-      });
+      onDelete(cardElement, cardData._id);
     });
   }
 
-  return cardElement;
+  // Обработчик клика по изображению (открывает попап с изображением)
+  cardImage.addEventListener("click", function () {
+    openImagePopup(cardData);
+  });
+
+  return cardElement; // Возвращаем созданный элемент карточки
 }
 
 // Удаление карточки
@@ -67,8 +69,8 @@ function deleteCard(cardElement, id) {
       cardElement.remove(); // Удаляем карточку из DOM после успешного удаления на сервере
     })
     .catch(function (err) {
-      console.error("Произошла ошибка при удалении карточки:", err); // Логирование ошибки в консоль
-      alert("Не удалось удалить карточку. Пожалуйста, попробуйте снова."); // Показ сообщения пользователю
+      console.error("Ошибка при удалении карточки:", err); // Логируем ошибку
+      alert("Не удалось удалить карточку. Пожалуйста, попробуйте снова."); // Сообщение пользователю
     });
 }
 
@@ -78,25 +80,25 @@ function handleLikeButton(button, id, countElement) {
 
   if (isLiked) {
     // Если лайк уже поставлен, то снимаем лайк
-    removeLike(id)
+    return removeLike(id)
       .then(function (data) {
         button.classList.remove("card__like-button_is-active"); // Убираем активный класс
         countElement.textContent = data.likes.length; // Обновляем количество лайков
       })
       .catch(function (err) {
-        console.error("Ошибка при снятии лайка:", err); // Логируем ошибку
-        alert("Не удалось снять лайк. Пожалуйста, попробуйте снова."); // Сообщение пользователю
+        console.error("Ошибка при удалении лайка:", err);
+        alert("Не удалось снять лайк. Пожалуйста, попробуйте позже.");
       });
   } else {
     // Если лайк не поставлен, то ставим лайк
-    addLike(id)
+    return addLike(id)
       .then(function (data) {
         button.classList.add("card__like-button_is-active"); // Добавляем активный класс
         countElement.textContent = data.likes.length; // Обновляем количество лайков
       })
       .catch(function (err) {
-        console.error("Ошибка при добавлении лайка:", err); // Логируем ошибку
-        alert("Не удалось поставить лайк. Пожалуйста, попробуйте снова."); // Сообщение пользователю
+        console.error("Ошибка при добавлении лайка:", err);
+        alert("Не удалось поставить лайк. Пожалуйста, попробуйте позже.");
       });
   }
 }

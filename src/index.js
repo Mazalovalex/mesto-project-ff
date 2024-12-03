@@ -48,13 +48,10 @@ const newCardFormPopup = document.forms["new-place"]; // форма добавл
 const newCardFormInputName = newCardFormPopup.elements["place-name"]; // поле для названия нового места
 const newCardFormInputLink = newCardFormPopup.elements.link; // поле для ссылки на изображение карточки
 
-// Выносим все необходимые элементы формы в константы (для валидации)
-const formElement = document.querySelector(".popup__form"); // форма
-const inputElement = document.querySelector(".popup__input"); // входное поле
 let myId = ""; // переменная для хранения ID пользователя
 
 // Конфигурация валидации форм
-const ValidationConfig = {
+const validationConfig = {
   formSelector: ".popup__form", // селектор формы
   inputSelector: ".popup__input", // селектор для инпутов
   submitButtonSelector: ".popup__button", // селектор кнопки отправки
@@ -149,13 +146,13 @@ function handleClickedCard(cardData) {
 editProfileButton.addEventListener("click", function () {
   profileFormNameInput.value = profileTitle.textContent; // заполнение формы текущими данными
   profileFormDescriptionInput.value = profileDescription.textContent;
-  clearValidation(profileEditForm, ValidationConfig); // очистка валидации
+  clearValidation(profileEditForm, validationConfig); // очистка валидации
   openModal(editProfilePopup); // открытие попапа
 });
 
 // Открытие попапа добавления новой карточки
 addProfileButton.addEventListener("click", function () {
-  clearValidation(addNewCardPopup, ValidationConfig); // очистка валидации
+  clearValidation(addNewCardPopup, validationConfig); // очистка валидации
   openModal(addNewCardPopup); // открытие попапа
 });
 
@@ -174,7 +171,7 @@ modalWindows.forEach(function (modalWindow) {
 
 // Открытие попапа для загрузки фотографии
 newAvatarButton.addEventListener("click", function () {
-  clearValidation(newAvatarForm, ValidationConfig); // очистка валидации
+  clearValidation(newAvatarForm, validationConfig); // очистка валидации
   openModal(newAvatarPopup); // открытие попапа для загрузки нового аватара
 });
 
@@ -188,7 +185,7 @@ newAvatarForm.addEventListener("submit", handleNewAvatarForm);
 newCardFormPopup.addEventListener("submit", handleAddNewCardForm);
 
 // Валидация всех форм
-enableValidation(ValidationConfig); // подключение валидации ко всем формам
+enableValidation(validationConfig); // подключение валидации ко всем формам
 
 // Загрузка данных пользователя и карточек с сервера
 Promise.all([fetchUserData(), fetchCardsData()]) // параллельная загрузка данных
